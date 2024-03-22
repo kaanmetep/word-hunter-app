@@ -1,8 +1,7 @@
-const radioStyle =
-  "accent-orange-300 w-4 h-4 cursor-pointer border-orange-200 transition-all delay-300";
+const radioStyle = "accent-orange-300 w-4 h-4 cursor-pointer border-orange-200";
 function Difficulty({ diffi, dispatch }) {
   return (
-    <div className="flex flex-row gap-6">
+    <div className="flex flex-row gap-6 justify-center">
       <div className="flex gap-2 items-center">
         <label htmlFor="easy">Easy</label>
         <input
