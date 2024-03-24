@@ -1,11 +1,5 @@
 import { useState } from "react";
-function Question({
-  questionObj,
-  index,
-  formValues,
-  handleFormChange,
-  showAnswers,
-}) {
+function Question({ questionObj, index, formValues, handleFormChange }) {
   return (
     <li className="flex flex-col gap-2">
       {questionObj.id === index &&
@@ -18,14 +12,13 @@ function Question({
             key={i}
             answers={questionObj.answers}
             i={i}
-            showAnswers={showAnswers}
           />
         ))}
     </li>
   );
 }
 
-function Word({ word, name, value, onChange, answers, i, showAnswers }) {
+function Word({ word, name, value, onChange, answers, i }) {
   return (
     <div className="flex items-center gap-3">
       <div className="bg-orange-200 py-2 px-6 rounded-lg text-center">
@@ -37,14 +30,10 @@ function Word({ word, name, value, onChange, answers, i, showAnswers }) {
             name={name}
             value={value}
             onChange={onChange}
+            maxLength={12}
           />
         </p>
       </div>
-      {showAnswers && (
-        <p className={value === answers[i] ? "text-green-500" : "text-red-500"}>
-          {value === answers[i] ? "true" : `Correct answer: ${answers[i]}`}
-        </p>
-      )}
     </div>
   );
 }

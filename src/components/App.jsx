@@ -1,4 +1,4 @@
-import { useReducer, useState } from "react";
+import { useReducer, useState, useRef } from "react";
 import StartScreen from "./StartScreen";
 import Difficulty from "./Difficulty";
 import Header from "./Header";
@@ -25,13 +25,19 @@ const tempQuiz = [
     answers: ["orman", "demir", "kilic"],
     diffi: "easy",
   },
+  {
+    id: 3,
+    words: ["computer", "black", "fork"],
+    answers: ["bilgisayar", "siyah", "catal"],
+    diffi: "easy",
+  },
 ];
 
 const initialState = {
   questions: [],
   diffi: "easy",
   status: "ready", //loading,error,ready,active,finished
-  answers: [],
+  answered: [],
   index: 0,
   showAnswers: false,
   points: 0,
@@ -48,19 +54,42 @@ function reducer(state, action) {
       return { ...state, status: "active" };
     case "onDone":
       let points = state.points;
-      tempQuiz[state.index].answers.forEach((answer, i) =>
-        answer === action.payload[i] ? (points += 10) : ""
-      );
-      return { ...state, showAnswers: true, points: points };
+      let tempAnswers = [];
+      tempQuiz[state.index].answers.forEach((answer, i) => {
+        if (answer === action.payload[i]) {
+          points++;
+          tempAnswers[i] = true;
+        } else {
+          tempAnswers[i] = false;
+        }
+      });
+      return {
+        ...state,
+        showAnswers: true,
+        points: points,
+        answered: tempAnswers,
+      };
     case "onNext":
+      if (state.index + 1 === tempQuiz.length) {
+        return {
+          ...state,
+          status: "finished",
+          showAnswers: false,
+          answered: [],
+        };
+      }
       return { ...state, index: state.index + 1, showAnswers: false };
+    case "onAgain":
+      return { ...initialState, status: "ready" };
     default:
       return new Error("unknown action");
   }
 }
+
 function App() {
+  const doneClicked = useRef(false);
   const [
-    { questions, diffi, status, answers, index, showAnswers, points },
+    { questions, diffi, status, answered, index, showAnswers, points },
     dispatch,
   ] = useReducer(reducer, initialState);
   const [formValues, setFormValues] = useState({
@@ -75,7 +104,6 @@ function App() {
       [name]: value,
     }));
   };
-
   return (
     <div className="w-5/6 mx-auto mt-24 max-w-[600px]">
       <Header />
@@ -89,17 +117,36 @@ function App() {
         )}
         {status === "active" && (
           <>
-            <QuizMain>
-              <Questions
-                tempQuiz={tempQuiz}
-                index={index}
-                formValues={formValues}
-                handleFormChange={handleFormChange}
-                showAnswers={showAnswers}
-              />
-            </QuizMain>
+            <div className="flex gap-2">
+              <QuizMain>
+                <Questions
+                  tempQuiz={tempQuiz}
+                  index={index}
+                  formValues={formValues}
+                  handleFormChange={handleFormChange}
+                />
+              </QuizMain>
+              <div className="flex items-center">
+                {showAnswers && (
+                  <ul className="flex flex-col justify-between item-center h-48">
+                    {answered.map((a, i) => (
+                      <li
+                        className={`${
+                          a === true ? "text-green-600" : "text-red-600"
+                        } `}
+                        key={i}
+                      >
+                        {a === true
+                          ? "True"
+                          : `Correct Answer:${tempQuiz[index].answers[i]}`}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </div>
             <button
-              onClick={() =>
+              onClick={() => {
                 dispatch({
                   type: "onDone",
                   payload: [
@@ -107,29 +154,47 @@ function App() {
                     formValues.textbox1,
                     formValues.textbox2,
                   ],
-                })
-              }
+                });
+                doneClicked.current = true;
+              }}
+              disabled={doneClicked.current}
             >
               Done
             </button>
           </>
         )}
+        {status === "finished" && (
+          <div className="text-center">
+            <p>Game is over.</p>
+            <p>
+              You did {points}/{tempQuiz.flatMap((el) => el.words).length}
+            </p>
+            <button
+              className="bg-orange-300 py-2 px-4 rounded-lg"
+              onClick={() => dispatch({ type: "onAgain" })}
+            >
+              Play Again
+            </button>
+          </div>
+        )}
       </div>
       {showAnswers && (
-        <button
-          onClick={() => {
-            dispatch({ type: "onNext" });
-            setFormValues({
-              textbox0: "",
-              textbox1: "",
-              textbox2: "",
-            });
-          }}
-        >
-          Next
-        </button>
+        <>
+          <button
+            onClick={() => {
+              dispatch({ type: "onNext" });
+              setFormValues({
+                textbox0: "",
+                textbox1: "",
+                textbox2: "",
+              });
+              doneClicked.current = false;
+            }}
+          >
+            {index + 1 === tempQuiz.length ? "Finish" : "Next"}
+          </button>
+        </>
       )}
-      <p>{points}</p>
     </div>
   );
 }
