@@ -1,5 +1,5 @@
-function QuizMain() {
-  return <div>QuizMain</div>;
+function QuizMain({ children }) {
+  return <div>{children}</div>;
 }
 
 export default QuizMain;
