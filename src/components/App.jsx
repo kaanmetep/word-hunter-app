@@ -9,6 +9,7 @@ import Questions from "./Questions";
 import Answers from "./Answers";
 import FinishScreen from "./FinishScreen";
 import DifficultyTag from "./DifficultyTag";
+import Timer from "./Timer";
 const tempQuiz = [
   {
     id: 0,
@@ -44,6 +45,7 @@ const initialState = {
   index: 0,
   showAnswers: false,
   points: 0,
+  time: 300,
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -86,6 +88,12 @@ function reducer(state, action) {
       return { ...state, index: state.index + 1, showAnswers: false };
     case "onAgain":
       return { ...initialState, status: "ready" };
+    case "tick":
+      return {
+        ...state,
+        time: state.time - 1,
+        status: state.time === 0 ? "finished" : state.status,
+      };
     default:
       return new Error("unknown action");
   }
@@ -94,7 +102,7 @@ function reducer(state, action) {
 function App() {
   const doneClicked = useRef(false);
   const [
-    { questions, diffi, status, answered, index, showAnswers, points },
+    { questions, diffi, status, answered, index, showAnswers, points, time },
     dispatch,
   ] = useReducer(reducer, initialState);
   const [formValues, setFormValues] = useState({
@@ -162,6 +170,7 @@ function App() {
             >
               Done
             </button>
+            <Timer time={time} dispatch={dispatch} />
           </>
         )}
         {status === "finished" && (
@@ -174,7 +183,7 @@ function App() {
         )}
       </div>
       {showAnswers && (
-        <div className="flex justify-end">
+        <div className="flex ">
           <button
             onClick={() => {
               dispatch({ type: "onNext" });
