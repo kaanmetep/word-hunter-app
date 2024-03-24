@@ -1,12 +1,13 @@
-function FinishScreen({ points, tempQuiz, dispatch }) {
+function FinishScreen({ points, tempQuiz, dispatch, diffi }) {
   return (
-    <div className="text-center">
-      <p>Game is over.</p>
-      <p>
-        You did {points}/{tempQuiz.flatMap((el) => el.words).length}
+    <div className="text-center flex flex-col gap-3">
+      <p className="text-sm">Game is over.</p>
+      <p className="text-lg">
+        You did {points}/{tempQuiz.flatMap((el) => el.words).length} in {diffi}{" "}
+        mode!
       </p>
       <button
-        className="bg-orange-300 py-2 px-4 rounded-lg"
+        className="bg-orange-300 py-2 px-8 rounded-lg hover:bg-orange-400 transition-all delay-50"
         onClick={() => dispatch({ type: "onAgain" })}
       >
         Play Again

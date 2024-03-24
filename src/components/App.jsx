@@ -8,6 +8,7 @@ import QuizMain from "./QuizMain";
 import Questions from "./Questions";
 import Answers from "./Answers";
 import FinishScreen from "./FinishScreen";
+import DifficultyTag from "./DifficultyTag";
 const tempQuiz = [
   {
     id: 0,
@@ -58,7 +59,9 @@ function reducer(state, action) {
       let points = state.points;
       let tempAnswers = [];
       tempQuiz[state.index].answers.forEach((answer, i) => {
-        if (answer === action.payload[i]) {
+        if (
+          answer.toLocaleLowerCase() === action.payload[i].toLocaleLowerCase()
+        ) {
           points++;
           tempAnswers[i] = true;
         } else {
@@ -109,7 +112,7 @@ function App() {
   return (
     <div className="w-5/6 mx-auto mt-24 max-w-[600px]">
       <Header />
-      <div className="bg-orange-100 flex flex-col items-center justify-center gap-6 rounded-lg p-8 mx-auto mt-6">
+      <div className="bg-orange-100 flex flex-col items-center justify-center gap-6 rounded-lg p-8 mx-auto mt-6 relative">
         {status === "loading" && <Loading />}
         {status === "error" && <Error />}
         {status === "ready" && (
@@ -119,7 +122,11 @@ function App() {
         )}
         {status === "active" && (
           <>
-            <div className="flex gap-2">
+            <DifficultyTag diffi={diffi} />
+            <p className="text-xs md:text-base">
+              What are the Turkish equivalents of the given words below?{" "}
+            </p>
+            <div className="flex gap-2 text-xs md:text-base">
               <QuizMain>
                 <Questions
                   tempQuiz={tempQuiz}
@@ -151,6 +158,7 @@ function App() {
                 doneClicked.current = true;
               }}
               disabled={doneClicked.current}
+              className="bg-orange-300 py-2 px-4 rounded-lg hover:bg-orange-400 transition-all delay-50 disabed:bg-gray-300"
             >
               Done
             </button>
@@ -161,11 +169,12 @@ function App() {
             dispatch={dispatch}
             points={points}
             tempQuiz={tempQuiz}
+            diffi={diffi}
           />
         )}
       </div>
       {showAnswers && (
-        <>
+        <div className="flex justify-end">
           <button
             onClick={() => {
               dispatch({ type: "onNext" });
@@ -176,10 +185,11 @@ function App() {
               });
               doneClicked.current = false;
             }}
+            className="bg-gradient-to-r from-orange-300 to-yellow-300 py-2 px-6 rounded-lg mt-3 hover:bg-gradient-to-l transition-all"
           >
             {index + 1 === tempQuiz.length ? "Finish" : "Next"}
           </button>
-        </>
+        </div>
       )}
     </div>
   );

@@ -1,4 +1,5 @@
-const radioStyle = "accent-orange-300 w-4 h-4 cursor-pointer border-orange-200";
+const radioStyle =
+  "accent-orange-500 w-4 h-4 cursor-pointer border-orange-200  inline-flex";
 function Difficulty({ diffi, dispatch }) {
   return (
     <div className="flex flex-row gap-6 justify-center">

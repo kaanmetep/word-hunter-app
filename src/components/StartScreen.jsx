@@ -1,8 +1,8 @@
 function StartScreen({ children, dispatch }) {
   return (
     <div className="flex flex-col gap-6">
-      <p className="text-center text-l max-w-[450px]">
-        This game contains 4 levels, and 5 words for every level. You have to
+      <p className="text-center text-base md:text-lg max-w-[500px] font-monospace">
+        This game contains 4 levels, and 3 words for every level. You have to
         answer all the questions before the time runs out. You can select the
         difficulty of the game you want to play.
       </p>

@@ -5,6 +5,7 @@ export default {
     extend: {},
     fontFamily: {
       sans: "Bangers,monospace",
+      monospace: "monospace",
     },
   },
   plugins: [],

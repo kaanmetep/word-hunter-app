@@ -22,7 +22,7 @@ function Word({ word, name, value, onChange, answers, i }) {
   return (
     <div className="flex items-center gap-3">
       <div className="bg-orange-200 py-2 px-6 rounded-lg text-center">
-        <p className="text-lg">{word}</p>
+        <p className="text-sm md:text-lg">{word}</p>
         <p>
           <input
             type="text"
