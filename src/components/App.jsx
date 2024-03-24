@@ -6,6 +6,8 @@ import Loading from "./Loading";
 import Error from "./Error";
 import QuizMain from "./QuizMain";
 import Questions from "./Questions";
+import Answers from "./Answers";
+import FinishScreen from "./FinishScreen";
 const tempQuiz = [
   {
     id: 0,
@@ -128,20 +130,11 @@ function App() {
               </QuizMain>
               <div className="flex items-center">
                 {showAnswers && (
-                  <ul className="flex flex-col justify-between item-center h-48">
-                    {answered.map((a, i) => (
-                      <li
-                        className={`${
-                          a === true ? "text-green-600" : "text-red-600"
-                        } `}
-                        key={i}
-                      >
-                        {a === true
-                          ? "True"
-                          : `Correct Answer:${tempQuiz[index].answers[i]}`}
-                      </li>
-                    ))}
-                  </ul>
+                  <Answers
+                    answered={answered}
+                    tempQuiz={tempQuiz}
+                    index={index}
+                  />
                 )}
               </div>
             </div>
@@ -164,18 +157,11 @@ function App() {
           </>
         )}
         {status === "finished" && (
-          <div className="text-center">
-            <p>Game is over.</p>
-            <p>
-              You did {points}/{tempQuiz.flatMap((el) => el.words).length}
-            </p>
-            <button
-              className="bg-orange-300 py-2 px-4 rounded-lg"
-              onClick={() => dispatch({ type: "onAgain" })}
-            >
-              Play Again
-            </button>
-          </div>
+          <FinishScreen
+            dispatch={dispatch}
+            points={points}
+            tempQuiz={tempQuiz}
+          />
         )}
       </div>
       {showAnswers && (
