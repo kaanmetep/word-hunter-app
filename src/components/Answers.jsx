@@ -1,7 +1,7 @@
 function Answers({ answered, tempQuiz, index }) {
   return (
     <div>
-      <ul className="flex flex-col justify-between item-center h-48">
+      <ul className="flex flex-col justify-between item-center h-40 md:h-48">
         {answered.map((a, i) => (
           <li key={i}>
             {a === true ? (
@@ -10,7 +10,7 @@ function Answers({ answered, tempQuiz, index }) {
                 <p>True</p>
               </div>
             ) : (
-              <div className="flex gap-1 text-xs items-center justify-start">
+              <div className="flex gap-2 text-xs items-center justify-start">
                 <span>❌</span>
                 <p className="text-red-400">
                   Correct Answer:
