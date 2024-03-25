@@ -11,8 +11,13 @@ function Timer({ time, dispatch }) {
   );
   return (
     <div className="w-full">
-      {Math.floor(time / 60).toFixed()}:
-      {(time % 60).toString().padStart(2, "0")}
+      <p className="border-t-2 border-orange-300 pt-2 text-xs">
+        Time remaining:
+        <span className="ml-1 text-base">
+          {Math.floor(time / 60).toFixed()}:
+          {(time % 60).toString().padStart(2, "0")}
+        </span>
+      </p>
     </div>
   );
 }

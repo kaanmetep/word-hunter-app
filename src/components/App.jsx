@@ -45,7 +45,7 @@ const initialState = {
   index: 0,
   showAnswers: false,
   points: 0,
-  time: 300,
+  time: 180,
 };
 function reducer(state, action) {
   switch (action.type) {
@@ -183,7 +183,7 @@ function App() {
         )}
       </div>
       {showAnswers && (
-        <div className="flex ">
+        <div className="flex justify-end">
           <button
             onClick={() => {
               dispatch({ type: "onNext" });
