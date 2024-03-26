@@ -127,9 +127,7 @@ function App() {
     (async () => {
       dispatch({ type: "onLoading" });
       try {
-        const res = await fetch(
-          `http://127.0.0.1:3000/api/v1/questions/${diffi}`
-        );
+        const res = await fetch(`/api/v1/questions/${diffi}`);
         const data = await res.json();
         dispatch({ type: "dataReceived", payload: data.data.questions });
         dispatch({ type: "onStart" });
