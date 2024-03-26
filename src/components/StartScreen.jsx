@@ -1,4 +1,4 @@
-function StartScreen({ children, dispatch }) {
+function StartScreen({ children, dispatch, startGame }) {
   return (
     <div className="flex flex-col gap-6">
       <p className="text-center text-base md:text-lg max-w-[500px] font-monospace">
@@ -9,7 +9,7 @@ function StartScreen({ children, dispatch }) {
       {children}
       <button
         className="cursor-pointer bg-orange-300 py-2 px-8 rounded-lg hover:bg-orange-400 transition-all delay-50"
-        onClick={() => dispatch({ type: "onStart" })}
+        onClick={startGame}
       >
         Start Playing
       </button>

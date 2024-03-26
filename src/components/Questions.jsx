@@ -1,11 +1,11 @@
 import Question from "./Question";
-function Questions({ tempQuiz, index, formValues, handleFormChange }) {
+function Questions({ questions, index, formValues, handleFormChange }) {
   return (
     <ul>
-      {tempQuiz.map((question) => (
+      {questions.map((question) => (
         <Question
           questionObj={question}
-          key={question.id}
+          key={question._id}
           index={index}
           formValues={formValues}
           handleFormChange={handleFormChange}

@@ -16,12 +16,14 @@ const questionsSchema = new mongoose.Schema({
   words: [String],
   answers: [String],
   diffi: String,
+  questionNumber: Number,
 });
 const Question = mongoose.model("Question", questionsSchema, "questions");
 
 const getAllQuestions = async (req, res) => {
   try {
-    const questions = await Question.find();
+    const { diffi } = req.params;
+    const questions = await Question.find({ diffi });
     res.status(200).json({
       status: "succes",
       data: {
@@ -33,7 +35,7 @@ const getAllQuestions = async (req, res) => {
   }
 };
 
-app.get("/api/v1/questions", getAllQuestions);
+app.get("/api/v1/questions/:diffi", getAllQuestions);
 
 const port = 3000;
 app.listen(port, () => {

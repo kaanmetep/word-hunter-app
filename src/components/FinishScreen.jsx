@@ -1,9 +1,9 @@
-function FinishScreen({ points, tempQuiz, dispatch, diffi }) {
+function FinishScreen({ points, questions, dispatch, diffi }) {
   return (
     <div className="text-center flex flex-col gap-3">
       <p className="text-sm">Game is over.</p>
       <p className="text-lg">
-        You did {points}/{tempQuiz.flatMap((el) => el.words).length} in {diffi}{" "}
+        You did {points}/{questions.flatMap((el) => el.words).length} in {diffi}{" "}
         mode!
       </p>
       <button

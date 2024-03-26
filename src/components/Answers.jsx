@@ -1,4 +1,4 @@
-function Answers({ answered, tempQuiz, index }) {
+function Answers({ answered, questions, index }) {
   return (
     <div>
       <ul className="flex flex-col justify-between item-center h-40 md:h-48">
@@ -14,7 +14,7 @@ function Answers({ answered, tempQuiz, index }) {
                 <span>❌</span>
                 <p className="text-red-400">
                   Correct Answer:
-                  <span className="ml-1 text-red-600 bg-red-200 py-1 px-2 rounded-lg">{`${tempQuiz[index].answers[i]}`}</span>
+                  <span className="ml-1 text-red-600 bg-red-200 py-1 px-2 rounded-lg">{`${questions[index].answers[i]}`}</span>
                 </p>
               </div>
             )}

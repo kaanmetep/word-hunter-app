@@ -1,4 +1,4 @@
-import { useReducer, useState, useRef } from "react";
+import { useReducer, useState, useRef, useEffect } from "react";
 import StartScreen from "./StartScreen";
 import Difficulty from "./Difficulty";
 import Header from "./Header";
@@ -10,32 +10,32 @@ import Answers from "./Answers";
 import FinishScreen from "./FinishScreen";
 import DifficultyTag from "./DifficultyTag";
 import Timer from "./Timer";
-const tempQuiz = [
-  {
-    id: 0,
-    words: ["apple", "car", "water"],
-    answers: ["elma", "araba", "su"],
-    diffi: "easy",
-  },
-  {
-    id: 1,
-    words: ["chair", "window", "orange"],
-    answers: ["sandalye", "pencere", "portakal"],
-    diffi: "easy",
-  },
-  {
-    id: 2,
-    words: ["jungle", "iron", "sword"],
-    answers: ["orman", "demir", "kilic"],
-    diffi: "easy",
-  },
-  {
-    id: 3,
-    words: ["computer", "black", "fork"],
-    answers: ["bilgisayar", "siyah", "catal"],
-    diffi: "easy",
-  },
-];
+// const tempQuiz = [
+//   {
+//     id: 0,
+//     words: ["apple", "car", "water"],
+//     answers: ["elma", "araba", "su"],
+//     diffi: "easy",
+//   },
+//   {
+//     id: 1,
+//     words: ["chair", "window", "orange"],
+//     answers: ["sandalye", "pencere", "portakal"],
+//     diffi: "easy",
+//   },
+//   {
+//     id: 2,
+//     words: ["jungle", "iron", "sword"],
+//     answers: ["orman", "demir", "kilic"],
+//     diffi: "easy",
+//   },
+//   {
+//     id: 3,
+//     words: ["computer", "black", "fork"],
+//     answers: ["bilgisayar", "siyah", "catal"],
+//     diffi: "easy",
+//   },
+// ];
 
 const initialState = {
   questions: [],
@@ -49,6 +49,10 @@ const initialState = {
 };
 function reducer(state, action) {
   switch (action.type) {
+    case "onError":
+      return { ...state, status: "error" };
+    case "onLoading":
+      return { ...state, status: "loading" };
     case "onEasy":
       return { ...state, diffi: action.payload };
     case "onMedium":
@@ -57,10 +61,12 @@ function reducer(state, action) {
       return { ...state, diffi: action.payload };
     case "onStart":
       return { ...state, status: "active" };
+    case "dataReceived":
+      return { ...state, questions: action.payload };
     case "onDone":
       let points = state.points;
       let tempAnswers = [];
-      tempQuiz[state.index].answers.forEach((answer, i) => {
+      state.questions[state.index].answers.forEach((answer, i) => {
         if (
           answer.toLocaleLowerCase() === action.payload[i].toLocaleLowerCase()
         ) {
@@ -77,7 +83,7 @@ function reducer(state, action) {
         answered: tempAnswers,
       };
     case "onNext":
-      if (state.index + 1 === tempQuiz.length) {
+      if (state.index + 1 === state.questions.length) {
         return {
           ...state,
           status: "finished",
@@ -117,6 +123,21 @@ function App() {
       [name]: value,
     }));
   };
+  const startGame = () => {
+    (async () => {
+      dispatch({ type: "onLoading" });
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:3000/api/v1/questions/${diffi}`
+        );
+        const data = await res.json();
+        dispatch({ type: "dataReceived", payload: data.data.questions });
+        dispatch({ type: "onStart" });
+      } catch (err) {
+        dispatch({ type: "onError" });
+      }
+    })();
+  };
   return (
     <div className="w-5/6 mx-auto mt-24 max-w-[600px]">
       <Header />
@@ -124,7 +145,7 @@ function App() {
         {status === "loading" && <Loading />}
         {status === "error" && <Error />}
         {status === "ready" && (
-          <StartScreen dispatch={dispatch}>
+          <StartScreen dispatch={dispatch} startGame={startGame}>
             <Difficulty diffi={diffi} dispatch={dispatch} />
           </StartScreen>
         )}
@@ -137,7 +158,7 @@ function App() {
             <div className="flex gap-2 text-xs md:text-base">
               <QuizMain>
                 <Questions
-                  tempQuiz={tempQuiz}
+                  questions={questions}
                   index={index}
                   formValues={formValues}
                   handleFormChange={handleFormChange}
@@ -147,7 +168,7 @@ function App() {
                 {showAnswers && (
                   <Answers
                     answered={answered}
-                    tempQuiz={tempQuiz}
+                    questions={questions}
                     index={index}
                   />
                 )}
@@ -177,7 +198,7 @@ function App() {
           <FinishScreen
             dispatch={dispatch}
             points={points}
-            tempQuiz={tempQuiz}
+            questions={questions}
             diffi={diffi}
           />
         )}
@@ -196,7 +217,7 @@ function App() {
             }}
             className="bg-gradient-to-r from-orange-300 to-yellow-300 py-2 px-6 rounded-lg mt-3 hover:bg-gradient-to-l transition-all"
           >
-            {index + 1 === tempQuiz.length ? "Finish" : "Next"}
+            {index + 1 === questions.length ? "Finish" : "Next"}
           </button>
         </div>
       )}

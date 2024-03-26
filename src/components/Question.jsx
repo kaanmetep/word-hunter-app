@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 function Question({ questionObj, index, formValues, handleFormChange }) {
   return (
     <li className="flex flex-col gap-2">
-      {questionObj.id === index &&
+      {questionObj.questionNumber === index &&
         questionObj.words.map((word, i) => (
           <Word
             word={word}
