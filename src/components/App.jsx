@@ -127,7 +127,9 @@ function App() {
     (async () => {
       dispatch({ type: "onLoading" });
       try {
-        const res = await fetch(`/api/v1/questions/${diffi}`);
+        const res = await fetch(
+          `https://word-hunter-server.vercel.app/api/v1/questions/${diffi}`
+        );
         const data = await res.json();
         dispatch({ type: "dataReceived", payload: data.data.questions });
         dispatch({ type: "onStart" });
