@@ -10,6 +10,7 @@ import Answers from "./Answers";
 import FinishScreen from "./FinishScreen";
 import DifficultyTag from "./DifficultyTag";
 import Timer from "./Timer";
+import QuestionHead from "./QuestionHead";
 // const tempQuiz = [
 //   {
 //     id: 0,
@@ -67,9 +68,10 @@ function reducer(state, action) {
       let points = state.points;
       let tempAnswers = [];
       state.questions[state.index].answers.forEach((answer, i) => {
-        if (
-          answer.toLocaleLowerCase() === action.payload[i].toLocaleLowerCase()
-        ) {
+        let modifiedAnswer = action.payload[i]
+          .toLocaleLowerCase()
+          .replaceAll("ı", "i");
+        if (answer.toLocaleLowerCase() === modifiedAnswer) {
           points++;
           tempAnswers[i] = true;
         } else {
@@ -138,6 +140,7 @@ function App() {
       }
     })();
   };
+
   return (
     <div className="w-5/6 mx-auto mt-24 max-w-[600px]">
       <Header />
@@ -152,9 +155,7 @@ function App() {
         {status === "active" && (
           <>
             <DifficultyTag diffi={diffi} />
-            <p className="text-xs md:text-base">
-              What are the Turkish equivalents of the given words below?{" "}
-            </p>
+            <QuestionHead />
             <div className="flex gap-2 text-xs md:text-base">
               <QuizMain>
                 <Questions
